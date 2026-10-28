@@ -19,7 +19,7 @@ from pytest_homeassistant_custom_component.components.recorder.common import (
     async_wait_recording_done,
 )
 
-from custom_components.yvw.api import UsageReading
+from custom_components.yvw.api import AccountInfo, UsageReading
 from custom_components.yvw.aura import AuraContext
 from custom_components.yvw.const import (
     CONF_ACCOUNT_ID,
@@ -53,6 +53,12 @@ async def _setup(hass: HomeAssistant, options: dict | None = None) -> MockConfig
     api.async_get_hourly_usage.return_value = [
         UsageReading(start=start + timedelta(hours=i), litres=1.0) for i in range(3)
     ]
+    api.async_get_account.return_value = AccountInfo(
+        account_id="1234567890",
+        address="1 Example St, Suburb, Vic, 3000",
+        meter_serial="YAW0000001",
+        has_usage=True,
+    )
     api.async_raw_cache.return_value = "1234567890"
     api.async_raw_account.return_value = {"accountSearchResponse": [{"accountId": "x"}]}
     api.async_probe_session_time.return_value = None
